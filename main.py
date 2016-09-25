@@ -1,16 +1,18 @@
 from __future__ import unicode_literals
 
-import q
+import file_queue
 import os
 import web
+from time import sleep
 from threading import Thread
 from youtube_dl import YoutubeDL
 
 def print_info(info_dict):
     print(info_dict["title"])
 
+q = file_queue.FileQueue('videos_to_dl')
+
 opts = {
-#'progress_hooks': [my_hook],
 "restrictfilenames":True,
 "match_filter":print_info,
 "outtmpl":"%(title)s",
@@ -27,7 +29,7 @@ class MainPage():
     def GET(self):
         if 'v' in web.input():
             link = "http://youtube.com/watch?v={}".format(web.input()['v'])
-            q.queue.put(link)
+            q.put(link)
             print(link)
             return web.seeother(link)
         else:
@@ -36,10 +38,15 @@ class MainPage():
     def POST(self):
         return "Woot woot"
 
+
+
 def dl_thread():
     while True:
-        link = q.queue.get()
-        download(link)
+        link = q.get()
+        if link is not None:
+            download(link)
+        else:
+            sleep(1)
 
 def download(link):
     with YoutubeDL(opts) as ydl:
