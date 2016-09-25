@@ -1,0 +1,13 @@
+[Unit]
+Description=YouTube downloader server
+
+[Service]
+User=root
+Group=root
+PIDFile=/run/ssyoutube.pid
+ExecStart=/root/ssyoutube/ssyoutube.py 
+WorkingDirectory=/root/ssyoutube
+Restart=on-failure
+
+[Install]
+WantedBy=graphical.target
