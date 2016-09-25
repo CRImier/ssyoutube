@@ -6,8 +6,13 @@ import web
 from threading import Thread
 from youtube_dl import YoutubeDL
 
+def print_info(info_dict):
+    print(info_dict["title"])
+
 opts = {
 #'progress_hooks': [my_hook],
+"restrictfilenames":True,
+"match_filter":print_info,
 "outtmpl":"%(title)s",
 "postprocessors":[{"key":'FFmpegExtractAudio', "preferredcodec":"mp3", "preferredquality":"0"}]
 }
